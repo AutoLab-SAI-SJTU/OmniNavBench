@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AI tooling
+.claude/
+.codex
+.marscode/
+.promptx/
+
+# Local config
+local_paths.env
+local_paths.local.env
+
+# Logs / runs / outputs
+*.log
+*.nohup
+nohup.out
+results/
+outputs/
+logs/
+replay_out/
+debug_images/
+debug_obs/
+datagen_smoke_test/
+.worktrees/
+
+# External model repos (cloned locally; never tracked).
+# Note: top-level OmniNav/ used to be gitignored as an external clone; it's
+# now the renamed core package and MUST stay tracked.
+NaVILA/
+OmniNav-main/
+PoliFormer/
+MTU3D-main/
+
+# Project-specific caches / private content
+docs/
+*/assets/
+bench/policy/omninav/image/
+toolkits/wework_smoke/
+toolkits/grscenes_scripts/README.md
+
+# Local dev/internal files (kept on disk, not shipped)
+convert_vlnce.py
+generate_start_positions.py
+make_public_envset.py
+sample_data.py
+ReplayInstructions.md
+README_sample_data.md
+goal_hiding_judge_key_design.md
+video_episode_mapping_merged.csv

@@ -1,0 +1,652 @@
+{
+  "scenarios": [
+    {
+      "id": "vlnce_val_seen_4",
+      "scene": {
+        "category": "MP3D",
+        "type": "matterport",
+        "use_matterport": true,
+        "manage_simulation": false,
+        "units_in_meters": 1.0,
+        "matterport": {
+          "usd_path": "matterport_usd/E9uDoFAP3SH/E9uDoFAP3SH.usd",
+          "obj_path": "",
+          "root_prim_path": "/World/terrain",
+          "add_ground_plane": true
+        }
+      },
+      "navmesh": {
+        "bake_root_prim_path": "/World",
+        "include_volume_parent": "/World/NavMesh",
+        "z_padding": 2.0,
+        "agent_radius": 5
+      },
+      "robots": {
+        "entries": [
+          {
+            "type": "carter_v1",
+            "label": "carter_v1",
+            "spawn_path": "/carter_v1",
+            "usd_path": "robots/Carter/carter_v1.usd",
+            "initial_pose": {
+              "position": [
+                13.333499908447266,
+                -5.276130199432373,
+                0.24438095092773438
+              ],
+              "orientation_deg": 180.0
+            },
+            "control": {
+              "mode": "move_by_speed",
+              "params": {
+                "base_velocity": 0.6,
+                "base_turn_rate": 1.2
+              }
+            }
+          }
+        ]
+      },
+      "task": {
+        "navigation": {
+          "instruction": "TURN LEFT YOU FACE A CHANDELIER ABOVE A GREEN TABLE WITH A DOOR WAY TO THE LEFT AND AN OPEN DOOR ON THE FAR WALL, WALK TOWARDS THE OPEN DOOR ON THE FAR WALL, WALK THOUGH THE DOOR AND DOWN THE HALLWAY INTO A ROOM WITH A BLUE PATTERNED CARPET AND A TABLE IN THE MIDDLE OF THE ROOM. ",
+          "goal_position": [
+            2.3771300315856934,
+            -4.029669761657715,
+            0.24438095092773438
+          ],
+          "objects": {
+            "vln_goal": [
+              2.3771300315856934,
+              -4.029669761657715,
+              0.24438095092773438
+            ]
+          },
+          "room_zone": {},
+          "success_radius": 3.0
+        },
+        "subtasks": [
+          {
+            "type": "GOTO_LANDMARK",
+            "object_id": "vln_goal"
+          }
+        ],
+        "sub_instructions": [
+          {
+            "step": 0,
+            "type": "VLN",
+            "text": "TURN LEFT YOU FACE A CHANDELIER ABOVE A GREEN TABLE WITH A DOOR WAY TO THE LEFT AND AN OPEN DOOR ON THE FAR WALL, WALK TOWARDS THE OPEN DOOR ON THE FAR WALL, WALK THOUGH THE DOOR AND DOWN THE HALLWAY INTO A ROOM WITH A BLUE PATTERNED CARPET AND A TABLE IN THE MIDDLE OF THE ROOM. "
+          }
+        ]
+      },
+      "recording": {
+        "instruction": "TURN LEFT YOU FACE A CHANDELIER ABOVE A GREEN TABLE WITH A DOOR WAY TO THE LEFT AND AN OPEN DOOR ON THE FAR WALL, WALK TOWARDS THE OPEN DOOR ON THE FAR WALL, WALK THOUGH THE DOOR AND DOWN THE HALLWAY INTO A ROOM WITH A BLUE PATTERNED CARPET AND A TABLE IN THE MIDDLE OF THE ROOM. ",
+        "gt_path": [
+          {
+            "frame": 0,
+            "xyz": [
+              13.333499908447266,
+              -5.276130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 0.0,
+            "distance_xy": 0.0,
+            "distance_total_xy": 0.0
+          },
+          {
+            "frame": 1,
+            "xyz": [
+              13.11699390411377,
+              -5.401130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": -149.99996028107253,
+            "time_s": 1.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 0.24999969982473144
+          },
+          {
+            "frame": 3,
+            "xyz": [
+              12.900487899780273,
+              -5.526130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": -149.99996028107253,
+            "time_s": 3.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 0.4999993996494629
+          },
+          {
+            "frame": 4,
+            "xyz": [
+              12.683981895446777,
+              -5.651130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": -149.99996028107253,
+            "time_s": 4.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 0.7499990994741943
+          },
+          {
+            "frame": 6,
+            "xyz": [
+              12.467475891113281,
+              -5.776130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": -149.99996028107253,
+            "time_s": 6.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 0.9999987992989258
+          },
+          {
+            "frame": 7,
+            "xyz": [
+              12.250969886779785,
+              -5.901130199432373,
+              0.24438095092773438
+            ],
+            "yaw_deg": -149.99996028107253,
+            "time_s": 7.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 1.2499984991236572
+          },
+          {
+            "frame": 9,
+            "xyz": [
+              12.074193000793457,
+              -6.077907085418701,
+              0.24438095092773438
+            ],
+            "yaw_deg": -135.0,
+            "time_s": 9.0,
+            "distance_xy": 0.2500002696759476,
+            "distance_total_xy": 1.4999987687996048
+          },
+          {
+            "frame": 10,
+            "xyz": [
+              11.832711219787598,
+              -6.01320219039917,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 10.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 1.7499991167938633
+          },
+          {
+            "frame": 12,
+            "xyz": [
+              11.591229438781738,
+              -5.948497295379639,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 12.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 1.9999994647881219
+          },
+          {
+            "frame": 13,
+            "xyz": [
+              11.349747657775879,
+              -5.883792400360107,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 13.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 2.2499998127823804
+          },
+          {
+            "frame": 15,
+            "xyz": [
+              11.10826587677002,
+              -5.819087505340576,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 15.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 2.500000160776639
+          },
+          {
+            "frame": 16,
+            "xyz": [
+              10.86678409576416,
+              -5.754382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 16.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 2.750000508770898
+          },
+          {
+            "frame": 18,
+            "xyz": [
+              10.650278091430664,
+              -5.629382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 18.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 3.000000208595629
+          },
+          {
+            "frame": 19,
+            "xyz": [
+              10.433772087097168,
+              -5.504382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 19.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 3.2499999084203606
+          },
+          {
+            "frame": 21,
+            "xyz": [
+              10.217266082763672,
+              -5.379382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 21.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 3.499999608245092
+          },
+          {
+            "frame": 22,
+            "xyz": [
+              10.000760078430176,
+              -5.254382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 22.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 3.7499993080698233
+          },
+          {
+            "frame": 23,
+            "xyz": [
+              9.78425407409668,
+              -5.129382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 23.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 3.9999990078945546
+          },
+          {
+            "frame": 25,
+            "xyz": [
+              9.567748069763184,
+              -5.004382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 25.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 4.2499987077192865
+          },
+          {
+            "frame": 26,
+            "xyz": [
+              9.351242065429688,
+              -4.879382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 26.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 4.499998407544018
+          },
+          {
+            "frame": 28,
+            "xyz": [
+              9.134736061096191,
+              -4.754382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 28.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 4.749998107368749
+          },
+          {
+            "frame": 29,
+            "xyz": [
+              8.918230056762695,
+              -4.629382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 29.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 4.9999978071934805
+          },
+          {
+            "frame": 31,
+            "xyz": [
+              8.7017240524292,
+              -4.504382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 31.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 5.249997507018212
+          },
+          {
+            "frame": 32,
+            "xyz": [
+              8.485218048095703,
+              -4.379382610321045,
+              0.24438095092773438
+            ],
+            "yaw_deg": 149.99996028107253,
+            "time_s": 32.0,
+            "distance_xy": 0.24999969982473144,
+            "distance_total_xy": 5.499997206842943
+          },
+          {
+            "frame": 34,
+            "xyz": [
+              8.243736267089844,
+              -4.314677715301514,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 34.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 5.7499975548372015
+          },
+          {
+            "frame": 35,
+            "xyz": [
+              8.002254486083984,
+              -4.249972820281982,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99998963701947,
+            "time_s": 35.0,
+            "distance_xy": 0.2500003479942586,
+            "distance_total_xy": 5.99999790283146
+          },
+          {
+            "frame": 37,
+            "xyz": [
+              7.760773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99996135245902,
+            "time_s": 37.0,
+            "distance_xy": 0.2499998874049853,
+            "distance_total_xy": 6.249997790236445
+          },
+          {
+            "frame": 38,
+            "xyz": [
+              7.510773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 38.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 6.499997790236445
+          },
+          {
+            "frame": 40,
+            "xyz": [
+              7.260773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 40.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 6.749997790236445
+          },
+          {
+            "frame": 41,
+            "xyz": [
+              7.010773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 41.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 6.999997790236445
+          },
+          {
+            "frame": 43,
+            "xyz": [
+              6.760773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 43.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 7.249997790236445
+          },
+          {
+            "frame": 44,
+            "xyz": [
+              6.510773181915283,
+              -4.185267925262451,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 44.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 7.499997790236445
+          },
+          {
+            "frame": 45,
+            "xyz": [
+              6.269291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 164.99996135245902,
+            "time_s": 45.0,
+            "distance_xy": 0.2499998874049853,
+            "distance_total_xy": 7.74999767764143
+          },
+          {
+            "frame": 47,
+            "xyz": [
+              6.019291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 47.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 7.99999767764143
+          },
+          {
+            "frame": 48,
+            "xyz": [
+              5.769291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 48.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 8.24999767764143
+          },
+          {
+            "frame": 50,
+            "xyz": [
+              5.519291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 50.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 8.49999767764143
+          },
+          {
+            "frame": 51,
+            "xyz": [
+              5.269291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 51.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 8.74999767764143
+          },
+          {
+            "frame": 53,
+            "xyz": [
+              5.019291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 53.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 8.99999767764143
+          },
+          {
+            "frame": 54,
+            "xyz": [
+              4.769291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 54.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 9.24999767764143
+          },
+          {
+            "frame": 56,
+            "xyz": [
+              4.519291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 56.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 9.49999767764143
+          },
+          {
+            "frame": 57,
+            "xyz": [
+              4.269291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 57.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 9.74999767764143
+          },
+          {
+            "frame": 59,
+            "xyz": [
+              4.019291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 59.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 9.99999767764143
+          },
+          {
+            "frame": 60,
+            "xyz": [
+              3.769291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 60.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 10.24999767764143
+          },
+          {
+            "frame": 62,
+            "xyz": [
+              3.519291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 62.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 10.49999767764143
+          },
+          {
+            "frame": 63,
+            "xyz": [
+              3.269291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 63.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 10.74999767764143
+          },
+          {
+            "frame": 65,
+            "xyz": [
+              3.019291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 65.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 10.99999767764143
+          },
+          {
+            "frame": 10000,
+            "xyz": [
+              2.769291877746582,
+              -4.12056303024292,
+              0.24438095092773438
+            ],
+            "yaw_deg": 180.0,
+            "time_s": 66.0,
+            "distance_xy": 0.25,
+            "distance_total_xy": 11.24999767764143
+          }
+        ],
+        "metadata": {
+          "source": "vlnce_gt",
+          "split": "val_seen",
+          "episode_id": "4",
+          "trajectory_id": "93",
+          "scene_id": "E9uDoFAP3SH",
+          "action_count": 66,
+          "forward_steps": 45,
+          "geodesic_distance": 11.194713592529297,
+          "distance_total_xy": 11.24999767764143,
+          "sample_count": 46
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# Dedicated 30 FPS config for standalone Carter data collection.
+# With physics_dt=rendering_dt=1/30 and rendering_interval=1,
+# each simulation step corresponds to one recorded frame.
+
+simulator:
+  physics_dt: 0.033333333
+  rendering_dt: 0.033333333
+  use_fabric: false
+  headless: false
+  rendering_interval: 1
+
+env_num: 1
+
+task_configs:
+  - type: FiniteStepTask
+    max_steps: 3000
+    robots: []
+    scene_asset_path: null
+
+scene: {}

@@ -1,0 +1,60 @@
+[package]
+description = "A trimmed down app for use with python samples"
+title = "Isaac Sim Python"
+version = "5.0.0"
+
+keywords = ["experience", "app", "usd", "isaacsim"] # That makes it browsable in UI with "experience" filter
+
+
+[dependencies]
+"isaacsim.exp.base" = {}
+"omni.kit.scripting" = {}
+"omni.usd" = {}
+"isaacsim.core.utils" = {}
+
+"isaacsim.asset.gen.omap" = {}
+"omni.kit.mesh.raycast" = {}
+"omni.services.pip_archive" = {}
+"isaacsim.sensors.camera" = {}
+"isaacsim.sensors.physics" = {}
+"isaacsim.sensors.rtx" = {}
+"isaacsim.storage.native" = {}
+
+"omni.anim.graph.core" = {}
+"omni.anim.graph.schema" = {}
+"omni.anim.navigation.core" = {}
+"omni.anim.navigation.schema" = {}
+"omni.anim.navigation.meshtools" = {}
+"omni.anim.people" = {}
+"isaacsim.anim.robot" = {}
+
+"omni.replicator.core" = {}
+"isaacsim.replicator.incident" = {}
+"omni.metropolis.utils" = {}
+
+"omni.isaac.matterport" = {}
+
+[settings.app]
+name = "Isaac-Sim Python"
+version = "5.0.0"
+settings.persistent = false        # settings reset on each run with this app
+window.title = "Isaac Sim Python"
+vulkan = true                      # Explicitly enable Vulkan (on by default on Linux, off by default on Windows)
+enableDeveloperWarnings = false    # disable developer warnings to reduce log noise
+
+[settings.app.exts.folders]
+'++' = [
+    # "${app}",
+    "${app}/../exts",
+    "${app}/../extscache",
+    "${app}/../extsUser",
+    "${app}/../extsDeprecated",
+    # __OMNINAV_DYNAMIC_EXT_FOLDERS__
+]
+
+[settings.exts."omni.kit.registry.nucleus"]
+registries = [
+	{ name = "kit/default", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/107/shared" },
+	{ name = "kit/sdk", url = "https://ovextensionsprod.blob.core.windows.net/exts/kit/prod/sdk/${kit_version_short}/${kit_git_hash}" },
+	{ name = "kit/community", url = "https://dw290v42wisod.cloudfront.net/exts/kit/community" },
+]

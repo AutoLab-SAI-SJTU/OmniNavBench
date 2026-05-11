@@ -1,0 +1,27 @@
+{
+	"GoTo": {
+		"weight": 1.0,
+		"transitions": {
+			"Idle": 5.0,
+			"LookAround": 5.0
+		}
+	},
+	"Idle": {
+		"weight": 1.0,
+		"transitions": {
+			"GoTo": 6.0,
+			"LookAround": 4.0
+		}
+	},
+	"LookAround": {
+		"weight": 1.0,
+		"transitions": {
+			"GoTo": 7.0,
+			"Idle": 3.0
+		}
+	},
+	"Sit": {
+		"weight": 0.0,
+		"transitions": {}
+	}
+}

@@ -1,0 +1,35 @@
+# This file stores all the default values for config file. Some notes:
+# - seed will be generated in code.
+# - asset_paths will be provided in code.
+# - writer parameters are provided by each writer.
+
+global:
+  seed:
+  simulation_length: 600
+sensor:
+  camera_num: 12
+  lidar_num: 0
+  camera_list: []
+  lidar_list: []
+scene:
+  asset_path:
+  use_matterport: false
+  matterport:
+    usd_path: ""
+    obj_path: ""
+    root_prim_path: /World/terrain/Matterport
+character:
+  asset_path:
+  command_file: default_command.txt
+  filters: []
+  num: 8
+event:
+  {}
+robot:
+  command_file: default_robot_command.txt
+  nova_carter_num: 0
+  iw_hub_num: 0
+  write_data: false
+replicator:
+  writer: IRABasicWriter
+  parameters: {}
