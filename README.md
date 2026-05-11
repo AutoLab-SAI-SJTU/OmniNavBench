@@ -25,6 +25,7 @@
 - [ ] Dataset release
 - [ ] Data-generation pipeline release
 - [ ] Replay pipeline release
+- [ ] Docker version release
 
 ## 🔎 Overview
 
