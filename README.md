@@ -5,6 +5,7 @@
 **Beyond Isolation: A Unified Benchmark for General-Purpose Navigation**
 
 [![RSS 2026](https://img.shields.io/badge/RSS-2026-blue)](https://roboticsconference.org/)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.09441-red)](https://arxiv.org/abs/2605.09441)
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-Live-orange)](http://omninavbench.cloud-ip.cc/)
 [![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow)](https://huggingface.co/datasets/AutoLab-SJTU/OmniNavBench)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
