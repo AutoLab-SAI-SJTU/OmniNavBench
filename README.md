@@ -22,8 +22,8 @@
 
 - [x] Code release
 - [x] Leaderboard submission portal
-- [ ] Paper release
-- [ ] Dataset release
+- [x] Paper release
+- [x] Dataset release
 - [ ] Data-generation pipeline release
 - [ ] Replay pipeline release
 - [ ] Docker version release
