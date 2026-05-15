@@ -189,11 +189,11 @@ class EpisodeRunner:
 
         human_paths: Dict[str, List[Dict[str, Any]]] = {}
         agent_manager = None
-        if follow_humans:
-            from OmniNavExt.envset.agent_manager import AgentManager
+        from OmniNavExt.envset.agent_manager import AgentManager
+        if AgentManager.has_instance():
             agent_manager = AgentManager.get_instance()
-            for hid in follow_humans:
-                human_paths[hid] = []
+            for name in agent_manager.get_all_agent_names():
+                human_paths[str(name)] = []
 
         try:
             mode = self._resolve_mode()
@@ -307,7 +307,7 @@ class EpisodeRunner:
             if self._visualizer is not None:
                 self._visualizer.record_step(step, obs_after)
             if human_paths and agent_manager is not None:
-                for hid in follow_humans:
+                for hid in human_paths:
                     human_pos = agent_manager.get_agent_pos_by_name(hid)
                     if human_pos is not None:
                         human_paths[hid].append({
@@ -388,7 +388,7 @@ class EpisodeRunner:
         metrics["spl"] = spl_value
 
         # FOLLOW_HUMAN: offline overall success based on final stop position relative to human.
-        if human_paths:
+        if follow_humans:
             try:
                 follow_dist_cfg = (config.extra or {}).get("follow_distance", 3.0)
                 try:
