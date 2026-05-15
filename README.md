@@ -69,7 +69,7 @@ Python packages: see [`pyproject.toml`](pyproject.toml). They install via `pip i
 
 Follow NVIDIA's official guide: [Isaac Lab — pip installation](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/pip_installation.html). It walks you through creating a Python 3.11 conda env, pip-installing Isaac Sim, and installing Isaac Lab in one place.
 
-> Tested with **Isaac Sim 5.0.0** + **Isaac Lab 2.3.0** + **Python 3.11**. Newer versions may also work but have not been verified for this benchmark.
+> Tested with **Isaac Sim 5.0.0** + **Isaac Lab 2.3.0** + **Python 3.11**. Older or newer versions may also work but require significant adaptation, as Isaac version updates often rename or restructure dependencies.
 
 ### 2. Clone this repo and install the Python deps
 
