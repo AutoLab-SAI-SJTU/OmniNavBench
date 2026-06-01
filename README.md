@@ -58,7 +58,7 @@ Most embodied-navigation benchmarks isolate a single skill (PointNav, VLN, Objec
 | Python | 3.11 | conda recommended |
 | Isaac Sim | 5.0.0 | install via the [Isaac Lab pip-installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/pip_installation.html) |
 | Isaac Lab | 2.3.0 | same guide; the [omni.isaac.matterport](https://github.com/Sun-Season/omni.isaac.matterport.git) extension under `IsaacLab/source/` is required |
-| GPU | NVIDIA, CUDA 12.8 | ≥ 24 GB VRAM recommended for policy servers |
+| GPU | NVIDIA, CUDA 12.8 | ≥ 24 GB VRAM recommended for policy servers; The device must have RT cores.|
 | RAM | ≥ 32 GB | Isaac Sim baseline |
 
 Python packages: see [`pyproject.toml`](pyproject.toml). They install via `pip install -e .` after the Isaac Lab guide (which handles `isaacsim` / `isaaclab` themselves).
