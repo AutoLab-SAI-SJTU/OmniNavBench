@@ -132,6 +132,34 @@ OmniNavBench/
     └── train/...
 ```
 
+The expected asset root layout is:
+
+```
+Assets/
+├── robots/
+│   ├── Carter/
+│   ├── aliengo/
+│   └── h1/
+├── GRScenes/
+│   ├── commercial_scenes/
+│   │   ├── scenes/
+│   │   ├── Materials/
+│   │   └── models/
+│   └── home_scenes/
+│       ├── scenes/
+│       ├── Materials/
+│       └── models/
+├── matterport_usd/
+│   └── <scene_id>/<scene_id>.usd
+└── IsaacAssets/
+  └── Environments/...
+```
+
+Set OMNINAV_SCENE_ROOT to the Assets/ directory. 
+
+
+### Robot assets
+
 The `human` / `dog` / `car` directories are **robot embodiments**, not object types. Mapping:
 
 | `--robot` flag | Dataset directory | Robot model |
