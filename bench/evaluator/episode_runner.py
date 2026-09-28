@@ -27,6 +27,7 @@ from ..metrics.navigation import (
     compute_eqa
 )
 from .termination import TerminationCondition, TerminationResult, StopActionCondition, CompositeCondition
+from .eqa_runtime import answer_text, execute_eqa, validate_eqa_interface
 from bench.utils.visualizer import Visualizer
 
 if TYPE_CHECKING:
@@ -114,6 +115,7 @@ class EpisodeRunner:
         execution_config: Optional[ExecutionConfig] = None,
         robot_profile: Optional[RobotExecutionProfile] = None,
         visualizer: Optional[Visualizer] = None,
+        enable_eqa: bool = False,
     ):
         """Initialize episode runner.
 
@@ -123,6 +125,10 @@ class EpisodeRunner:
             record_trajectory: Whether to record full trajectory
             visualizer: Optional Visualizer for recording/visualization
         """
+        validate_eqa_interface(policy, enable_eqa)
+        self.enable_eqa = enable_eqa
+        self._eqa_status = "not_applicable"
+        self._eqa_reason: Optional[str] = None
         self.policy = policy
         self.record_trajectory = record_trajectory
         self.execution_config = execution_config or ExecutionConfig()
@@ -160,7 +166,11 @@ class EpisodeRunner:
             EpisodeResult with evaluation metrics
         """
         print(f"[EpisodeRunner] Starting episode {config.scenario_id}", flush=True)
-        # Reset state
+        # Reset state (including EQA; a runner can be reused across episodes).
+        self._eqa_result = None
+        self._eqa_accuracy = None
+        self._eqa_status = "not_applicable"
+        self._eqa_reason = None
         self.policy.reset(instruction=config.instruction)
         self._termination.reset()
         self._required_camera_names = self._parse_required_cameras(config)
@@ -615,8 +625,12 @@ class EpisodeRunner:
         if human_paths:
             extra["human_paths"] = human_paths
 
-        # Call EQA for UniNaVid models after episode completion
+        # Call EQA only when explicitly enabled by the user.
         self._call_eqa_if_available(final_obs, config.instruction)
+        extra["eqa_status"] = self._eqa_status
+        extra["eqa_enabled"] = self.enable_eqa
+        if self._eqa_reason is not None:
+            extra["eqa_reason"] = self._eqa_reason
 
         # Add EQA result and accuracy to metrics/extra if available
         if self._eqa_result is not None:
@@ -904,66 +918,27 @@ class EpisodeRunner:
         return np.sqrt(dx * dx + dy * dy)
 
     def _call_eqa_if_available(self, final_obs: Observation, instruction: str):
-        """Call EQA for UniNaVid models if available using final frame."""
-        # Check if this is a UniNaVid policy
-        policy_name = self.policy.__class__.__name__
-        if not policy_name.lower().startswith('uninavid'):
-            return  # Only UniNaVid has EQA capability
-
-        # Check if EQA task is available (has qa info)
-        # If qa field is null, None, or empty, skip EQA entirely
-        has_eqa_task = False
-        if hasattr(self, '_config') and self._config.extra:
-            qa_info = self._config.extra.get('qa')
-            if qa_info is not None and isinstance(qa_info, dict) and qa_info:
-                # Check if qa has at least a question
-                if 'question' in qa_info:
-                    has_eqa_task = True
-
-        if not has_eqa_task:
-            # No EQA task, set result to None
-            self._eqa_result = None
-            print("[EpisodeRunner] Skipping EQA - no valid qa information found")
-            return
-
-        try:
-            # Check if the policy has predict_text method
-            if not hasattr(self.policy, 'predict_text'):
-                print("[EpisodeRunner] UniNaVid policy doesn't have predict_text method, skipping EQA")
-                self._eqa_result = None
-                return
-
-            # Get the EQA question from config
-            qa_info = self._config.extra.get('qa')
-            eqa_question = qa_info.get('question', instruction)
-
-            # Use the final observation image
-            if final_obs.rgb is None:
-                print("[EpisodeRunner] No RGB image in final observation, skipping EQA")
-                self._eqa_result = None
-                return
-
-            # Call EQA using policy's predict_text method
-            print(f"[EpisodeRunner] Calling EQA with question: {eqa_question}")
-            eqa_answer = self.policy.predict_text(eqa_question, final_obs.rgb)
-
-            print(f"[EpisodeRunner] EQA Answer: {eqa_answer}")
-            self._eqa_result = eqa_answer
-
-            # Get ground truth answer and evaluate correctness
-            ground_truth = qa_info.get('answer')
-            if ground_truth:
-                eqa_correct = compute_eqa(ground_truth, eqa_answer)
-                print(f"[EpisodeRunner] EQA Correct: {eqa_correct} (GT: '{ground_truth}')")
-                self._eqa_accuracy = eqa_correct
-            else:
-                print("[EpisodeRunner] No ground truth answer available for EQA evaluation")
-                self._eqa_accuracy = None
-
-        except Exception as e:
-            print(f"[EpisodeRunner] EQA call failed: {e}")
-            self._eqa_result = None
-            self._eqa_accuracy = None
+        """Use the user opt-in and optional adapter interface, never its class name."""
+        extra = self._config.extra if self._config is not None else {}
+        outcome = execute_eqa(self.policy, self.enable_eqa, extra or {}, final_obs.rgb)
+        self._eqa_result = outcome.answer
+        self._eqa_status = outcome.status
+        self._eqa_reason = outcome.reason
+        self._eqa_accuracy = None
+        # Runtime-local accuracy is optional (public test envsets have no answers).
+        # It is not exported as an authoritative leaderboard score.
+        if outcome.status in {"disabled", "no_answer"}:
+            self._eqa_accuracy = False
+        elif outcome.status == "answered":
+            qa = (extra or {}).get("qa")
+            try:
+                reference = answer_text(qa.get("answer")) if isinstance(qa, dict) else None
+            except ValueError:
+                reference = None
+            if reference is not None:
+                self._eqa_accuracy = bool(compute_eqa(reference, outcome.answer))
+        print(f"[EpisodeRunner] EQA status={outcome.status}, enabled={self.enable_eqa}"
+              + (f", reason={outcome.reason}" if outcome.reason else ""))
 
     def _resolve_mode(self) -> ExecutionMode:
         """Resolve execution mode for current policy."""

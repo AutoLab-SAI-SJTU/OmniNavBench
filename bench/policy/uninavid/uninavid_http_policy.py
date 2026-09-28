@@ -170,51 +170,23 @@ class UniNaVidHTTPPolicy(BasePolicy):
         # Convert discrete action to Action object
         return self._discrete_to_continuous(action_str)
 
-    def predict_text(self, instruction: str, rgb: np.ndarray) -> str:
-        """Generate text answer for EQA task using HTTP server.
-
-        Args:
-            instruction: EQA question/instruction
-            rgb: RGB image as numpy array
-
-        Returns:
-            Generated text answer
-        """
-        try:
-            rgb_array = self._prepare_image(rgb)
-
-            # Encode image as base64
-            image_base64 = self._encode_image(rgb_array)
-
-            # Prepare request payload
-            payload = {
-                "instruction": instruction,
-                "image": image_base64,
-                "image_shape": list(rgb_array.shape),
-            }
-
-            # Make request to /predict_text endpoint
-            response = self.session.post(
-                f"{self.server_url}/predict_text",
-                json=payload,
-                timeout=self.timeout
-            )
-            response.raise_for_status()
-            result = response.json()
-
-            # Extract answer from response
-            if "answer" in result:
-                return str(result["answer"])
-            else:
-                print(f"[UniNaVidHTTPPolicy] Unexpected predict_text response format: {result}")
-                return ""
-
-        except requests.exceptions.RequestException as e:
-            print(f"[UniNaVidHTTPPolicy] predict_text request failed: {e}")
-            return ""
-        except Exception as e:
-            print(f"[UniNaVidHTTPPolicy] predict_text failed: {e}")
-            return ""
+    def predict_text(self, instruction: str, rgb: np.ndarray) -> str | None:
+        """Return an answer; propagate transport/format errors to the EQA runner."""
+        rgb_array = self._prepare_image(rgb)
+        payload = {
+            "instruction": instruction,
+            "image": self._encode_image(rgb_array),
+            "image_shape": list(rgb_array.shape),
+        }
+        response = self.session.post(
+            f"{self.server_url}/predict_text", json=payload, timeout=self.timeout,
+        )
+        response.raise_for_status()
+        result = response.json()
+        if not isinstance(result, dict) or "answer" not in result:
+            raise ValueError("EQA response must contain an answer field.")
+        from bench.evaluator.eqa_runtime import answer_text
+        return answer_text(result["answer"])
 
     def _prepare_image(self, rgb: np.ndarray) -> np.ndarray:
         """Prepare image for transmission.

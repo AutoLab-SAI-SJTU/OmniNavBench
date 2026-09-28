@@ -1,3 +1,6 @@
+# Opt-in EQA: set true only after implementing predict_text(question, rgb).
+enable_eqa: false
+
 # Dedicated 30 FPS config for standalone Carter data collection.
 # With physics_dt=rendering_dt=1/30 and rendering_interval=1,
 # each simulation step corresponds to one recorded frame.

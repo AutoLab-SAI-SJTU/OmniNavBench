@@ -66,6 +66,11 @@ class BasePolicy(ABC):
     - Output: Action (velocity command)
 
     Subclasses must implement `act()` method.
+
+    Optional EQA: implement predict_text(question: str, rgb: np.ndarray)
+    returning text (or None/blank for no answer), then explicitly enable EQA
+    in the run configuration. Let execution errors raise; do not turn them
+    into empty answers. Merely implementing this method does not enable EQA.
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):

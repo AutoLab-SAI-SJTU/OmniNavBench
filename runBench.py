@@ -25,6 +25,8 @@ from bench import BenchRunner, BenchConfig, BasePolicy, Observation, Action
 from bench.evaluator.bench_runner import BenchResult
 from bench.evaluator.episode_runner import EpisodeResult
 
+from bench.evaluator.eqa_runtime import resolve_eqa_enabled, validate_eqa_interface
+
 TEST_MODE_ENV = "OMNINAV_BENCH_TEST_MODE"
 
 
@@ -126,6 +128,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--success-threshold", type=float, default=2.0, help="Success distance (meters)")
     parser.add_argument("--policy", choices=["forward", "uninavid", "uninavid_waypoint", "uninavid_waypoint_points", "mtu3d", "poliformer", "navila", "omninav"], default="forward")
+    parser.add_argument("--enable-eqa", action=argparse.BooleanOptionalAction, default=None,
+                       help="Explicitly enable EQA; --no-enable-eqa overrides YAML. Default: YAML enable_eqa or false.")
     parser.add_argument("--no-trajectory", action="store_true", help="Disable trajectory recording")
     parser.add_argument("--no-sort", action="store_true", help="Disable sorting scenarios by scene")
     parser.add_argument("--no-save-per-episode", action="store_true", help="Disable saving per-episode results")
@@ -368,6 +372,7 @@ def main():
     if not args.envset.exists():
         raise FileNotFoundError(f"Envset not found: {args.envset}")
 
+    enable_eqa = resolve_eqa_enabled(args.config, args.enable_eqa)
     args.output.mkdir(parents=True, exist_ok=True)
 
     # Create policy
@@ -416,6 +421,9 @@ def main():
         case _:
             policy = create_policy(args.policy)
 
+    validate_eqa_interface(policy, enable_eqa)
+    print(f"[runBench] EQA enabled: {enable_eqa} (user setting; does not change task requirements)")
+
     # Build policy-specific arguments for subprocess mode
     policy_args = {
         "uninavid_server_url": args.uninavid_server_url,
@@ -454,6 +462,7 @@ def main():
         policy_name=args.policy,
         policy_args=policy_args,
         isolate_episodes=args.isolate_episodes,
+        enable_eqa=enable_eqa,
     )
 
     print(f"[runBench] Config: {args.config}")

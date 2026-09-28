@@ -1,3 +1,6 @@
+# Opt-in EQA: set true only after implementing predict_text(question, rgb).
+enable_eqa: false
+
 # Minimal OmniNav config for envset standalone runner
 # Most configuration comes from envset.json, this provides base settings
 

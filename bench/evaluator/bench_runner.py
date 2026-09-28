@@ -24,6 +24,7 @@ from bench.utils.visualizer import Visualizer
 
 from ..policy.base import BasePolicy
 from .episode_runner import EpisodeRunner, EpisodeConfig, EpisodeResult
+from .eqa_runtime import reusable_eqa_result, validate_eqa_interface
 from .runtime_limits import find_test_runtime_limits, test_runtime_limit_key
 from .termination import StuckCondition, TimeoutCondition, TerminationCondition
 from bench.configs.execution import ExecutionConfig
@@ -78,6 +79,7 @@ class BenchConfig:
     policy_name: str = "forward"
     policy_args: Dict[str, Any] = field(default_factory=dict)
     isolate_episodes: bool = False  # Run each episode in a separate process
+    enable_eqa: bool = False  # Explicit user opt-in; never inferred from a model name.
 
 
 @dataclass
@@ -138,6 +140,7 @@ class BenchRunner:
             config: Benchmark configuration
             policy: Navigation policy to evaluate
         """
+        validate_eqa_interface(policy, config.enable_eqa)
         self.config = config
         self.policy = policy
         self._results: List[EpisodeResult] = []
@@ -510,6 +513,7 @@ class BenchRunner:
             execution_config = ExecutionConfig(policy_mode_map=default_policy_mode_map())
             robot_profile = self._get_robot_execution_profile(runner, scenario)
             episode_runner = EpisodeRunner(
+                enable_eqa=self.config.enable_eqa,
                 policy=self.policy,
                 termination_conditions=termination_conditions,
                 record_trajectory=self.config.record_trajectory,
@@ -1125,7 +1129,7 @@ class BenchRunner:
         if not self.config.save_per_episode:
             return False
         output_file = self.config.output_dir / f"{scenario_id}.json"
-        return output_file.exists()
+        return reusable_eqa_result(output_file, self.config.enable_eqa)
 
     @staticmethod
     def _episode_output_file(ref: ScenarioRef, output_root: Path) -> Path:
@@ -1142,7 +1146,7 @@ class BenchRunner:
             return False
         if not self.config.save_per_episode:
             return False
-        return self._episode_output_file(ref, self.config.output_dir).exists()
+        return reusable_eqa_result(self._episode_output_file(ref, self.config.output_dir), self.config.enable_eqa)
 
     @staticmethod
     def _log(message: str) -> None:
@@ -1509,6 +1513,7 @@ class BenchRunner:
             execution_config = ExecutionConfig(policy_mode_map=default_policy_mode_map())
             robot_profile = self._get_robot_execution_profile(runner, scenario)
             episode_runner = EpisodeRunner(
+                enable_eqa=self.config.enable_eqa,
                 policy=self.policy,
                 termination_conditions=termination_conditions,
                 record_trajectory=self.config.record_trajectory,
@@ -1767,6 +1772,7 @@ class BenchRunner:
 
         cmd.extend(["--timeout-multiplier", str(self.config.timeout_multiplier)])
         cmd.extend(["--success-threshold", str(self.config.success_threshold)])
+        cmd.append("--enable-eqa" if self.config.enable_eqa else "--no-enable-eqa")
 
         if not self.config.record_trajectory:
             cmd.append("--no-trajectory")
@@ -1942,8 +1948,11 @@ class BenchRunner:
         extra = result.extra or {}
         if extra.get("human_paths"):
             data["human_paths"] = _to_json_serializable(extra["human_paths"])
-        if extra.get("eqa_answer"):
+        if extra.get("eqa_answer") is not None:
             data["eqa_answer"] = str(extra["eqa_answer"])
+        for key in ("eqa_status", "eqa_enabled", "eqa_reason"):
+            if key in extra:
+                data[key] = extra[key]
 
         try:
             with output_file.open("w", encoding="utf-8") as f:

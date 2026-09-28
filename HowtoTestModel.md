@@ -150,3 +150,57 @@ python runBench.py \
     --omninav-server-url http://localhost:<port> \
     --headless
 ```
+
+## EQA: explicit user opt-in
+
+EQA is **off by default for every policy, including Uni-NaVid**. A model name
+or an existing method does not enable it automatically. In the simulator YAML
+passed to `--config`, set the top-level boolean:
+
+```yaml
+enable_eqa: true
+```
+
+Alternatively add `--enable-eqa` to the existing `runBench.py` command.
+`--no-enable-eqa` explicitly disables it. Precedence is CLI > YAML > false;
+subprocess/grouped runs preserve the resolved choice. Python integrations use
+`BenchConfig(..., enable_eqa=True)` or `EpisodeRunner(..., enable_eqa=True)`.
+These Python parameters are explicit; they do not read the YAML themselves.
+
+Before enabling, implement this optional method in the policy adapter:
+
+```python
+def predict_text(self, question: str, rgb: np.ndarray) -> str | None:
+    return self.model.answer(question, rgb)  # Use your model's own interface.
+```
+
+Enabling EQA without a callable interface fails before simulation startup.
+The call receives the task question and final RGB image, not the reference
+answer. Return None or an empty string only for a normal empty model response.
+Let transport, inference, and malformed-response errors raise. The provided
+Uni-NaVid HTTP adapter follows this contract and no longer swallows HTTP errors.
+An interface check validates wiring, not a model's reasoning capability.
+
+Each episode result JSON records `eqa_enabled` and `eqa_status`, plus
+`eqa_answer` when present and a safe `eqa_reason` for disabled/error cases:
+
+| Status | Meaning |
+| --- | --- |
+| `not_applicable` | No EQA task in this episode; no call. |
+| `disabled` | User did not enable EQA; no claim about model capability. |
+| `answered` | A nonblank answer was produced; correctness is judged offline. |
+| `no_answer` | Call completed normally but produced no answer. |
+| `not_run` | Required input (question/final RGB) was unavailable. |
+| `error` | Call failed or produced an invalid response type. |
+
+A disabled, unanswered, or wrong answer to an official EQA task scores zero on
+the evaluation platform; disabling the switch **does not remove that task from
+the denominator**. Other task scores are still evaluated. Execution faults are
+reported separately. The platform must support `eqa_status=disabled`.
+
+Resume checks do not reuse disabled/legacy outputs after enabling EQA, or reuse
+an explicit EQA execution failure. Switching the setting reruns incompatible
+outputs. `--no-skip` forces a rerun regardless. Back up outputs when comparing
+runs. Existing EQA answers, scoring formulas, and private GT data are not changed
+by the switch. In-repository offline scoring revisions may differ from the
+hosted platform; this change is to runtime invocation and result reporting.
