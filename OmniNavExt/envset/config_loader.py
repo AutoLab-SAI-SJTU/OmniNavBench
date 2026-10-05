@@ -92,8 +92,15 @@ class EnvsetConfigLoader:
         """Normalize envset file paths in-place using the provided scene_root."""
         if not isinstance(scenario, dict):
             return
+        robots_cfg = scenario.get("robots")
+        entries = (robots_cfg.get("entries") or []) if isinstance(robots_cfg, dict) else []
+        vh_cfg = scenario.get("virtual_humans")
+        count = int(vh_cfg.get("count") or 0) if isinstance(vh_cfg, dict) else 0
         if scene_root is None:
-            if EnvsetConfigLoader._scenario_has_asset_paths(scenario):
+            active_scenario = dict(scenario)
+            if count <= 0:
+                active_scenario.pop("virtual_humans", None)
+            if entries or count > 0 or EnvsetConfigLoader._scenario_has_asset_paths(active_scenario):
                 raise ValueError("[Envset] --scene-root is required to resolve envset file paths.")
             return
 
@@ -104,14 +111,16 @@ class EnvsetConfigLoader:
             raise FileNotFoundError(f"[Envset] scene_root not found: {base}")
         EnvsetConfigLoader._apply_scene_root_asset_path(base)
 
-        def join_and_check(value: Any, label: str) -> Any:
-            if value is None:
+        def join_and_check(value: Any, label: str, *, required_file: bool = False) -> Any:
+            if value is None or not str(value).strip():
+                if required_file:
+                    raise ValueError(f"[Envset] {label} is required")
                 return value
             value_str = str(value)
-            if not value_str:
-                return value
             resolved = (base / value_str).expanduser()
-            if not resolved.exists():
+            if required_file and not resolved.is_file():
+                raise FileNotFoundError(f"[Envset] {label} USD file not found: {resolved}")
+            if not required_file and not resolved.exists():
                 raise FileNotFoundError(f"[Envset] {label} not found: {resolved}")
             return str(resolved)
 
@@ -130,22 +139,40 @@ class EnvsetConfigLoader:
                 if "obj_path" in mp_cfg:
                     mp_cfg["obj_path"] = join_and_check(mp_cfg.get("obj_path"), "scene.matterport.obj_path")
 
-        robots_cfg = scenario.get("robots")
-        if isinstance(robots_cfg, dict):
-            entries = robots_cfg.get("entries") or []
-            if isinstance(entries, list):
-                for entry in entries:
-                    if isinstance(entry, dict) and "usd_path" in entry:
-                        entry["usd_path"] = join_and_check(entry.get("usd_path"), "robots.entries[].usd_path")
+        if isinstance(entries, list):
+            for idx, entry in enumerate(entries):
+                if isinstance(entry, dict):
+                    entry["usd_path"] = join_and_check(
+                        entry.get("usd_path"), f"robots.entries[{idx}].usd_path", required_file=True
+                    )
 
-        vh_cfg = scenario.get("virtual_humans")
-        if isinstance(vh_cfg, dict):
-            asset_root = vh_cfg.get("asset_root")
-            if isinstance(asset_root, dict):
-                if "path" in asset_root:
-                    asset_root["path"] = join_and_check(asset_root.get("path"), "virtual_humans.asset_root.path")
-                if "fallback" in asset_root:
-                    asset_root["fallback"] = join_and_check(asset_root.get("fallback"), "virtual_humans.asset_root.fallback")
+        if count <= 0:
+            return
+        asset_root = vh_cfg.get("asset_root") or {}
+        for field in ("path", "fallback"):
+            if field in asset_root:
+                asset_root[field] = join_and_check(
+                    asset_root.get(field), f"virtual_humans.asset_root.{field}"
+                )
+        root = asset_root.get("fallback") or asset_root.get("path")
+        if not root and not asset_root.get("settings_key"):
+            raise ValueError("[Envset] virtual_humans.asset_root.path or fallback is required")
+
+        assets = vh_cfg.get("assets") or {}
+        fallback_asset = next(iter(assets.values()), None)
+        name_sequence = vh_cfg.get("name_sequence") or []
+        for idx in range(count):
+            name = (
+                str(name_sequence[idx])
+                if idx < len(name_sequence) and name_sequence[idx]
+                else ("Character" if idx == 0 else f"Character_{idx:02d}")
+            )
+            asset = assets.get(name) or fallback_asset
+            label = f"virtual_humans.assets[{name!r}]"
+            if not asset or not str(asset).strip():
+                raise ValueError(f"[Envset] {label} is required")
+            if root:
+                join_and_check(Path(root) / str(asset), label, required_file=True)
 
     @staticmethod
     def _apply_scene_root_asset_path(scene_root: Path) -> None:
